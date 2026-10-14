@@ -45,7 +45,7 @@ def add_player_stats(player, positions, duplicates):
         duplicates.add(name)
     
     if position == "Goalkeeper":
-        ## Check for negative statistics and handle them
+        ## Check for invalid statistics and handle them
         # Saves
         if type(player.get("saves", 0)) != int or player.get("saves", 0) < 0:
             print(f"Warning: Invalid statistic found for player {name} in position {position}. Skipping 'saves'.")
@@ -67,7 +67,7 @@ def add_player_stats(player, positions, duplicates):
         else:
             positions[position]["player_count"] += 1
     else:
-        ## Check for negative statistics and handle them
+        ## Check for invalid statistics and handle them
         # Goals
         if type(player.get("goals", 0)) != int  or player.get("goals", 0) < 0:
             print(f"Warning: Invalid statistic found for player {name} in position {position}. Skipping 'goals'.")
@@ -102,90 +102,29 @@ def add_player_stats(player, positions, duplicates):
             duplicates.remove(name) # Remove the player from duplicates set since they were skipped
         else:
             positions[position]["player_count"] += 1
-        
-### Fake data for testing purposes
-players = [
-    {"name": "Fake Player #1", 
-         "position": "Forward",
-         "goals": -3,
-         "assists": 1,
-         "tackles_won": 0,
-         "tackles_lost": 0,
-        },
-        
-        {"name": "Fake Player #2", 
-         "position": "Midfielder",
-         "goals": 1,
-         "assists": 3,
-         "tackles_won": -1,
-         "tackles_lost": 3,
-        },
-        
-        {"name": "Fake Player #3", 
-         "position": "Defender",
-         "goals": 1,
-         "assists": -2,
-         "tackles_won": 9,
-         "tackles_lost": 1,
-        },
-        
-        {"name": "Fake Player #4", 
-         "position": "Goalkeeper",
-         "saves": 5,
-         "goals_conceded": 1,
-        },
-        
-        {"name": "Fake Player #4", 
-         "position": "Goalkeper",
-         "saves": 5,
-         "goals_conceded": 1,
-        },
-        
-        {"name": "Fake Player #5", 
-         "position": "Defender",
-         "goals": 0,
-         "tackles_won": 3,
-         "tackles_lost": -3,
-        },
-        
-        {"name": "Fake Player #6", 
-         "position": "Midfielder",
-         "goals": True,
-         "assists": False,
-         "tackles_won": True,
-         "tackles_lost": False,
-        }
-]
-
-### Initialize the positions dictionary to store stats for each position
-positions = {}
-duplicates = set()
-for player in players:
-    position = player["position"] 
-    valid = initialize_positions(position, positions)
-    if valid:
-        add_player_stats(player, positions, duplicates)
     
 ## Display the stats for each position
-if not positions:
-    print("No valid players found")
+def display_stats(positions):
+    if not positions:
+        print("No valid players found")
+        return
 
-for position, stats in positions.items():
-    print(f"Position: {position}")
-    print(f"Player Count: {stats['player_count']}")
+    for position, stats in positions.items():
+        print(f"Position: {position}")
+        print(f"Player Count: {stats['player_count']}")
     
-    if position == "Goalkeeper":
-        print(f"Saves: {stats['saves']}")
-        print(f"Goals Conceded: {stats['goals_conceded']}")
-    else:
-        print(f"Goals: {stats['goals']}")
-        print(f"Assists: {stats['assists']}")
-        print(f"Tackles Won: {stats['tackles_won']}")
-        print(f"Tackles Lost: {stats['tackles_lost']}")
-        total_tackles = stats['tackles_won'] + stats['tackles_lost']
-        if total_tackles > 0:
-            tackle_success_rate = (stats['tackles_won'] / total_tackles) * 100
-            print(f"Tackle Success Rate: {tackle_success_rate:.2f}%")
+        if position == "Goalkeeper":
+            print(f"Saves: {stats['saves']}")
+            print(f"Goals Conceded: {stats['goals_conceded']}")
         else:
-            print("Tackle Success Rate: N/A")
-    print()
+            print(f"Goals: {stats['goals']}")
+            print(f"Assists: {stats['assists']}")
+            print(f"Tackles Won: {stats['tackles_won']}")
+            print(f"Tackles Lost: {stats['tackles_lost']}")
+            total_tackles = stats['tackles_won'] + stats['tackles_lost']
+            if total_tackles > 0:
+                tackle_success_rate = (stats['tackles_won'] / total_tackles) * 100
+                print(f"Tackle Success Rate: {tackle_success_rate:.2f}%")
+            else:
+                print("Tackle Success Rate: N/A")
+        print()
